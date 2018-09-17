@@ -74,3 +74,18 @@ func W32_Terminate() (err error, code int) {
 
 	return err, _ErrCode_ShellExecute
 }
+
+
+func recovery() {
+	var (
+		rType   string = "_0rec"
+		rMethod        = "recovery"
+	)
+
+	var err = recover()
+	fmt.Printf("<&recovery: type=%s, method=%s, recovery=true, err=%s>",
+		rType,
+		rMethod,
+		err,
+	)
+}
