@@ -13,7 +13,7 @@ Author - 0x9ef<br/>
   6. **ifeo payload** (creating/modifying "magnify"|"Debugger" values, seting "magnify" to "magnifierpane", seting "Debugger" value to payload path) | **(in processing)**registry key) | **(in processing)**
   7. **schtasks.exe payload** (creating xml template on "%appdata%\Microsoft\Temp\elevator.xml", create new xml task for "OneDriveUpdate") | **(in processing)**
   8. **sdkltcontrol.exe** (modifying/creating primary DEFAULT value to payload path, spawning new cmd command and executing it) | **(in processing)**
-  9. **silentcleanup payload** (creating new ABSOLUTE registry key, seting "windir" value to "cmd /k %payload%", run schtasks process "/Run /TN \Microsoft\Windows\DiskCleanup\SilentCleanup /I") | **(worked)**
+  9. **silentcleanup.exe payload** (creating new ABSOLUTE registry key, seting "windir" value to "cmd /k %payload%", run schtasks process "/Run /TN \Microsoft\Windows\DiskCleanup\SilentCleanup /I") | **(worked)**
   10. **slui.exe payload** (creating/modifying ABSOLUTE registry key, seting DEFAULT value to payload path, "DelegateExecute" to None, executing "slui.exe") | **(in processing)**
   11. **userinit.exe payload** (modifying primary "Userinit" value to "%systemroot%\system32\userinit.exe, payload path, system rebooting) | **(in processing)**
   12. **wmic.exe payload** (spawn cmd commands and executing it) | **(in processing)**
