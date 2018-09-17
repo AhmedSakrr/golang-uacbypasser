@@ -1,5 +1,7 @@
 package guacbypasser
 
+import "fmt"
+
 type __W32_ComputerDefaults__ struct {
 	Type   string
 	Method string
@@ -16,6 +18,15 @@ type __W32_Eventvwr__ struct {
 
 	Location    string
 	_K_Eventvwr byte
+}
+
+type __W32_Fodhelper__ struct {
+	Type   string
+	Method string
+	Scode  [4]uintptr
+
+	Location     string
+	_K_Fodhelper byte
 }
 
 type __W32_HKCU_Runer__ struct {
@@ -45,13 +56,13 @@ type __W32_Schtasks__ struct {
 	_K_Schtasks byte
 }
 
-type __W32_Slui__ struct {
+type __W32_Sdcltcontrol__ struct {
 	Type   string
 	Method string
-	Scode  [2]uintptr
+	Scode  [4]uintptr
 
-	Location string
-	_K_Slui  byte
+	Location        string
+	_K_Sdcltcontrol byte
 }
 
 type __W32_SilentCleanUp__ struct {
@@ -63,6 +74,15 @@ type __W32_SilentCleanUp__ struct {
 	_K_SilentCleanUp byte
 }
 
+type __W32_Slui__ struct {
+	Type   string
+	Method string
+	Scode  [2]uintptr
+
+	Location string
+	_K_Slui  byte
+}
+
 type __W32_Userinit__ struct {
 	Type   string
 	Method string
@@ -70,4 +90,20 @@ type __W32_Userinit__ struct {
 
 	Location    string
 	_K_Userinit byte
+}
+
+type __W32_WMIC__ struct {
+	Type   string
+	Method string
+	Scode  [2]uintptr
+
+	Location string
+	_K_Wmic  byte
+}
+
+func recovery() {
+	var err = recover()
+	fmt.Printf("%s\r\n",
+		err,
+	)
 }

