@@ -13,11 +13,11 @@ Rewrite of - https://github.com/rootm0s/WinPwnage to Golang.
 * UAC Bypass using _computerdefaults.exe_
 * UAC Bypass using _eventvwr.exe_
 * UAC Bypass using _fodhelper.exe_
-* UAC Bypass using _HKCU Registry (OneDriveUpdate)_
-* UAC Bypass using _HKLM Registry (OneDriveUpdate) (ADMIN privileges)_
-* UAC Bypass using _IFEO (ADMIN privileges)_
-* UAC Bypass using _schtasks.txt (SYSTEM privileges)_
-* UAC Bypass using _sdcltcontrol.exe (App Paths)_
+* UAC Bypass using _HKCU Registry_
+* UAC Bypass using _HKLM Registry_
+* UAC Bypass using _IFEO_
+* UAC Bypass using _schtasks.exe
+* UAC Bypass using _sdcltcontrol.exe_
 * UAC Bypass using _silentcleanup.exe_
 * UAC Bypass using _slui.exe_
 * UAC Bypass using _userinit.exe_
