@@ -79,7 +79,7 @@ func W32_Terminate() (err error, code int) {
 func recovery() {
 	var (
 		rType   string = "_0rec"
-		rMethod        = "recovery"
+		rMethod string = "recovery"
 	)
 
 	var err = recover()
