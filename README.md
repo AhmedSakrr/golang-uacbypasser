@@ -1,4 +1,4 @@
-# GUAC-Bypasser (golang-uacbypasser)
+# Golang UAC Bypasser (GUACBP)
 
 Collection bypass techiques on Golang.
 
