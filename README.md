@@ -10,7 +10,7 @@ Author - 0x9ef<br/>
   3. **fodhelper.exe payload** (modifying primary DEFAULT value to payload path, "DelegateExecute" to None, start finhelper.exe) | **(in processing)**
   4. **hkcu runer (OneDriveUpdate) payload** (creating/modifying ABSOLUTE registry key, seting "OneDriveUpdate" value to payload path) | **(in processing)**
   5. **hklm runer (OneDriveUpdate) payload** (creating/modifying ABSOLUTE registry key, seting "OneDriveUpdate" value to payload path) | **(in processing)**
-  6. **ifeo payload** (creating/modifying "magnify"|"Debugger" values, seting "magnify" to "magnifierpane", seting "Debugger" value to payload path) | **(in processing)**registry key) | **(in processing)**
+  6. **ifeo payload** (creating/modifying "magnify"|"Debugger" values, seting "magnify" to "magnifierpane", seting "Debugger" value to payload path) | **(in processing)**
   7. **schtasks.exe payload** (creating xml template on "%appdata%\Microsoft\Temp\elevator.xml", create new xml task for "OneDriveUpdate") | **(in processing)**
   8. **sdkltcontrol.exe** (modifying/creating primary DEFAULT value to payload path, spawning new cmd command and executing it) | **(in processing)**
   9. **silentcleanup.exe payload** (creating new ABSOLUTE registry key, seting "windir" value to "cmd /k %payload%", run schtasks process "/Run /TN \Microsoft\Windows\DiskCleanup\SilentCleanup /I") | **(worked)**
