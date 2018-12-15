@@ -3,7 +3,8 @@ package guacbypasser
 import (
 	"log"
 	"syscall"
-
+	"fmt"
+	
 	w32 "github.com/JamesHovious/w32"
 	"golang.org/x/sys/windows/registry"
 )
