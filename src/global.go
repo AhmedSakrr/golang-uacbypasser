@@ -1,7 +1,5 @@
 package guacbypasser
 
-import "fmt"
-
 type __W32_ComputerDefaults__ struct {
 	Type   string
 	Method string
@@ -99,11 +97,4 @@ type __W32_WMIC__ struct {
 
 	Location string
 	_K_Wmic  byte
-}
-
-func recovery() {
-	var err = recover()
-	fmt.Printf("%s\r\n",
-		err,
-	)
 }
